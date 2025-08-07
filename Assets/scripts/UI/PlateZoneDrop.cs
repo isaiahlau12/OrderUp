@@ -1,19 +1,38 @@
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-//defines area where cards can be dropped
+
 public class PlateZoneDrop : MonoBehaviour, IDropHandler
 {
+    public List<GameObject> cardsInPlate = new List<GameObject>();
+    private Transform canvas;
+    private void Start()
+    {
+
+        canvas = GameObject.FindGameObjectWithTag("Canvas").transform;
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         GameObject droppedCard = eventData.pointerDrag;
         if (droppedCard == null) return;
 
-        // Snap card to the plate and center it as parent
+        if (!cardsInPlate.Contains(droppedCard))
+        {
+            cardsInPlate.Add(droppedCard);
+        }
+
         droppedCard.transform.SetParent(transform, false);
         droppedCard.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+    }
 
-        Debug.Log($"Card dropped: {droppedCard.name}");
+    public void RemoveCard(GameObject card)
+    {
+        if (cardsInPlate.Contains(card))
+        {
+            cardsInPlate.Remove(card);
+            card.transform.SetParent(canvas, false);
+        }
     }
 }

@@ -1,20 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-//Manages UI slider and the text 
+
 public class SatisfactionMeter : MonoBehaviour
 {
-    public TMP_Text scoreText;  // cureentScore
-    public Slider meterSlider;  // bar assign both inspector
-    //Updates slider and text
-    public void UpdateMeter(int currentScore)
+    public Slider meterSlider;
+    private TextMeshProUGUI scoreText;
+    private void Start()
+    {
+        scoreText = GameObject.FindGameObjectWithTag("Currentscore").GetComponent<TextMeshProUGUI>();
+        Debug.Log(scoreText)
+                ; 
+    }
+
+    public void UpdateMeter(int currentScore, int scoreToBeat)
     {
         if (scoreText != null)
-            scoreText.text = currentScore.ToString();
+            scoreText.SetText( $"{currentScore} / {scoreToBeat}");
 
         if (meterSlider != null)
-            meterSlider.value = currentScore; // Assuming maxValue is already set
+        {
+            meterSlider.maxValue = scoreToBeat;
+            meterSlider.value = currentScore;
+        }
     }
 }

@@ -1,39 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("References")]
-    public Transform plateZone; // platezone
-    public SatisfactionMeter satisfactionMeter; // satisfactionmeter
+    public PlateZoneDrop plateZone;
+    public SatisfactionMeter satisfactionMeter;
+    public int scoreToBeat = 100;
 
     public void PlayCards()
     {
-        // Debug to chekc if fucntion is called
-        Debug.Log("PlayCards() triggered");
-
-        // Null checks
         if (plateZone == null || satisfactionMeter == null)
         {
-            Debug.LogError("Missing references in GameManager!");
+            Debug.LogError("PlateZone or SatisfactionMeter not assigned.");
             return;
         }
 
-        // Calculate total satisfaction score
         int totalScore = 0;
-        foreach (Transform card in plateZone)
+
+        foreach (GameObject card in plateZone.cardsInPlate)
         {
-            if (card == null) continue;
-
             CardDisplay display = card.GetComponent<CardDisplay>();
-            if (display == null || display.cardData == null) continue;
-
-            totalScore += display.cardData.satisfactionValue;
-            Debug.Log($"Added {display.cardData.cardName}: {display.cardData.satisfactionValue}");
+            if (display != null && display.cardData != null)
+            {
+                totalScore += display.cardData.satisfactionValue;
+            }
         }
-
-        Debug.Log($"Total Score: {totalScore}");
-        satisfactionMeter.UpdateMeter(totalScore); // update the meter
+        satisfactionMeter.UpdateMeter(totalScore, scoreToBeat);
     }
 }

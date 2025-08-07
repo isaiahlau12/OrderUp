@@ -1,39 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-// enables drag and drop 
+
 public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private CanvasGroup canvasGroup; // control raycast 
-    private Transform originalParent; 
-
+    private Transform originalParent;
+    private CanvasGroup canvasGroup;
+    private Canvas canvas;
+    private bool test = false;
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        canvas = GetComponentInParent<Canvas>();
+    }
+    private void Update()
+    {
+        if (!test) { return; }
+        Debug.Log(transform.localScale);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        test = true;
         originalParent = transform.parent;
-        transform.SetParent(transform.root); // moves to the top of the hierarchy 
-        canvasGroup.blocksRaycasts = false; //disables raycast 
+        transform.SetParent(canvas.transform);
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position; //Follow mouse 
+        transform.position = eventData.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //  dropped on something invalid, return to hand
-        if (transform.parent == transform.root)
-        {
-            transform.SetParent(originalParent); // Return to hand if not dropped properly
-        }
-
         canvasGroup.blocksRaycasts = true;
-    }
 
+        // If card is not dropped in a drop zone, return to hand
+        if (transform.parent == canvas.transform)
+        {
+            transform.SetParent(originalParent);
+            transform.localScale = Vector3.one;
+            Debug.Log("asfiawjfifjisjd");
+
+            // If card was removed from plate, tell the plate
+            PlateZoneDrop plateZone = originalParent.GetComponentInParent<PlateZoneDrop>();
+            if (plateZone != null)
+            {
+                plateZone.RemoveCard(gameObject);
+            }
+        }
+    }
 }
