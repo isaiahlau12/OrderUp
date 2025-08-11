@@ -7,9 +7,9 @@ public class PlateZoneDrop : MonoBehaviour, IDropHandler
 {
     public List<GameObject> cardsInPlate = new List<GameObject>();
     private Transform canvas;
+
     private void Start()
     {
-
         canvas = GameObject.FindGameObjectWithTag("Canvas").transform;
     }
 
@@ -34,5 +34,14 @@ public class PlateZoneDrop : MonoBehaviour, IDropHandler
             cardsInPlate.Remove(card);
             card.transform.SetParent(canvas, false);
         }
+    }
+
+    public void ClearPlate()
+    {
+        foreach (GameObject card in cardsInPlate)
+        {
+            Destroy(card); // or you can move back to hand instead
+        }
+        cardsInPlate.Clear();
     }
 }

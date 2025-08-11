@@ -6,21 +6,15 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Transform originalParent;
     private CanvasGroup canvasGroup;
     private Canvas canvas;
-    private bool test = false;
+
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
     }
-    private void Update()
-    {
-        if (!test) { return; }
-        Debug.Log(transform.localScale);
-    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        test = true;
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
         canvasGroup.blocksRaycasts = false;
@@ -40,7 +34,6 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             transform.SetParent(originalParent);
             transform.localScale = Vector3.one;
-            Debug.Log("asfiawjfifjisjd");
 
             // If card was removed from plate, tell the plate
             PlateZoneDrop plateZone = originalParent.GetComponentInParent<PlateZoneDrop>();

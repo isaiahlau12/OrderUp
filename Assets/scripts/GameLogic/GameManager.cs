@@ -4,13 +4,13 @@ public class GameManager : MonoBehaviour
 {
     public PlateZoneDrop plateZone;
     public SatisfactionMeter satisfactionMeter;
-    public int scoreToBeat = 100;
+    public CustomerManager customerManager;
 
     public void PlayCards()
     {
-        if (plateZone == null || satisfactionMeter == null)
+        if (plateZone == null || satisfactionMeter == null || customerManager == null)
         {
-            Debug.LogError("PlateZone or SatisfactionMeter not assigned.");
+            Debug.LogError("PlateZone, SatisfactionMeter, or CustomerManager not assigned.");
             return;
         }
 
@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
                 totalScore += display.cardData.satisfactionValue;
             }
         }
+
+        int scoreToBeat = customerManager.GetCurrentScoreToBeat();
         satisfactionMeter.UpdateMeter(totalScore, scoreToBeat);
+        customerManager.ReactToSatisfaction(totalScore);
     }
 }
