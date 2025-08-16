@@ -1,23 +1,38 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private Transform originalParent;
+    private int originalSiblingIndex;
+    private Vector3 originalLocalScale;
     private CanvasGroup canvasGroup;
-    private Canvas canvas;
+    private Canvas rootCanvas;
+
+    private PlateZoneDrop previousPlate; // if the card started on a plate
 
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        canvas = GetComponentInParent<Canvas>();
+        rootCanvas = GetComponentInParent<Canvas>();
+        if (!rootCanvas) Debug.LogWarning("CardDragHandler: No Canvas found in parents.");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         originalParent = transform.parent;
-        transform.SetParent(canvas.transform);
-        canvasGroup.blocksRaycasts = false;
+        originalSiblingIndex = transform.GetSiblingIndex();
+        originalLocalScale = transform.localScale;
+
+        previousPlate = GetComponentInParent<PlateZoneDrop>();
+
+        // Lift to top layer for dragging
+        if (rootCanvas) transform.SetParent(rootCanvas.transform, true);
+
+        // Visual feedback
+        transform.localScale = originalLocalScale * 1.05f;
+        canvasGroup.blocksRaycasts = false; // allow drop zones to receive OnDrop
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -29,18 +44,28 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         canvasGroup.blocksRaycasts = true;
 
-        // If card is not dropped in a drop zone, return to hand
-        if (transform.parent == canvas.transform)
-        {
-            transform.SetParent(originalParent);
-            transform.localScale = Vector3.one;
+        // If no drop zone took the card, we're still under the root canvas.
+        bool dropAccepted = (transform.parent != null && transform.parent != rootCanvas.transform);
 
-            // If card was removed from plate, tell the plate
-            PlateZoneDrop plateZone = originalParent.GetComponentInParent<PlateZoneDrop>();
-            if (plateZone != null)
+        if (!dropAccepted)
+        {
+            // If we pulled the card off a plate and didn't drop anywhere valid,
+            // send it to the HandContainer.
+            var deck = FindObjectOfType<DeckManager>();
+            if (previousPlate != null && deck != null && deck.handContainer != null)
             {
-                plateZone.RemoveCard(gameObject);
+                previousPlate.RemoveCard(gameObject);
+                transform.SetParent(deck.handContainer, false);
+                transform.localScale = originalLocalScale;
+                return;
             }
+
+            // Otherwise, revert to original parent (e.g., back into the hand layout)
+            transform.SetParent(originalParent, false);
+            transform.SetSiblingIndex(originalSiblingIndex);
         }
+
+        // Normalize visuals
+        transform.localScale = originalLocalScale;
     }
 }

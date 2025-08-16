@@ -9,6 +9,10 @@ public class CardData : ScriptableObject
     public Sprite cardSprite;
     public CardType cardType;
     public int satisfactionValue;
+
+    [Header("Special Effects")]
+    public CardEffectType effectType = CardEffectType.None;
+    public int effectValue; // Bonus or number of cards to draw
 }
 //enum for the different card types , more types of cards will be added as devlopment progresses
 public enum CardType
@@ -17,5 +21,14 @@ public enum CardType
     Vegetable,
     Sauce,
     Spice,
-    Other
+    sweets,
+    processes,
+    BBQ
+}
+//special effect for cards that dont exclusively add satisfaction
+public enum CardEffectType
+{
+    None,
+    BonusForCardsPlayed, // +staisfaction for x of cards played
+    DrawCards // Draw X cards from the deck
 }
