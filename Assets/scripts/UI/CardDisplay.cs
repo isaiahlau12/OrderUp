@@ -9,7 +9,7 @@ public class CardDisplay : MonoBehaviour
     public CardData cardData;
     public Image cardImage;
     public TextMeshProUGUI cardNameText;
-    public TextMeshProUGUI satisfactionText; // optional: show satisfaction value on card
+    public TextMeshProUGUI satisfactionText; // to show satisfaction if not already on th card 
 
     // Assign card data dynamically
     public void SetCardData(CardData data)
@@ -26,7 +26,6 @@ public class CardDisplay : MonoBehaviour
             satisfactionText.text = cardData.satisfactionValue.ToString();
     }
 
-    // Optional helper to get the card type / effect
     public CardType GetCardType()
     {
         return cardData != null ? cardData.cardType : CardType.Meat;

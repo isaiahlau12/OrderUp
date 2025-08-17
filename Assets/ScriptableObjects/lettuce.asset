@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 067395d55698ce5419386b9fc088d93e, type: 3}
   m_Name: lettuce
   m_EditorClassIdentifier: 
+  cardID: lettuce
   cardName: lettuce
   cardSprite: {fileID: 21300000, guid: f22e93cc86f1c934da66992e9afd2010, type: 3}
   cardType: 1
   satisfactionValue: 500
+  tags: 00000000
+  effectType: 0
+  effectValue: 0

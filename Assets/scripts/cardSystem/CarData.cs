@@ -5,10 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewCard", menuName = "Card")]
 public class CardData : ScriptableObject
 {
+    public string cardID; 
     public string cardName;
     public Sprite cardSprite;
     public CardType cardType;
     public int satisfactionValue;
+    public List<CardType> tags = new List<CardType>();
 
     [Header("Special Effects")]
     public CardEffectType effectType = CardEffectType.None;

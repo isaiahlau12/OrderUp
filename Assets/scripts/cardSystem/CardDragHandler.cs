@@ -30,7 +30,6 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         // Lift to top layer for dragging
         if (rootCanvas) transform.SetParent(rootCanvas.transform, true);
 
-        // Visual feedback
         transform.localScale = originalLocalScale * 1.05f;
         canvasGroup.blocksRaycasts = false; // allow drop zones to receive OnDrop
     }
@@ -44,12 +43,12 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         canvasGroup.blocksRaycasts = true;
 
-        // If no drop zone took the card, we're still under the root canvas.
+        // If no drop zone took the card,  still under the root canvas.
         bool dropAccepted = (transform.parent != null && transform.parent != rootCanvas.transform);
 
         if (!dropAccepted)
         {
-            // If we pulled the card off a plate and didn't drop anywhere valid,
+            // If  pulled the card off a plate and didn't drop anywhere valid,
             // send it to the HandContainer.
             var deck = FindObjectOfType<DeckManager>();
             if (previousPlate != null && deck != null && deck.handContainer != null)

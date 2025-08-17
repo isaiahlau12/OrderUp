@@ -11,9 +11,11 @@ public class CustomerManager : MonoBehaviour
     public CustomerData[] customers;
     private int currentCustomerIndex = 0;
     private CustomerData currentCustomer;
+    private bool[] satisfiedFlags;
 
     void Start()
     {
+        satisfiedFlags = new bool[customers.Length];
         LoadCustomer(currentCustomerIndex);
     }
 
@@ -49,13 +51,40 @@ public class CustomerManager : MonoBehaviour
     {
         return currentCustomer != null ? currentCustomer.scoreToBeat : 0;
     }
+    public int GetCurrentIndex()
+    {
+        return currentCustomerIndex;
+    }
 
-    public void NextCustomer()
+    public int GetTotalCustomers()
+    {
+        return customers != null ? customers.Length : 0;
+    }
+
+    // Marks the current customer as satisfied.
+    public void MarkCurrentCustomerSatisfied()
+    {
+        if (currentCustomerIndex >= 0 && currentCustomerIndex < satisfiedFlags.Length)
+            satisfiedFlags[currentCustomerIndex] = true;
+    }
+
+    //Returns true if all customers were satisfied.
+    public bool IsAllCustomersSatisfied()
+    {
+        if (satisfiedFlags == null) return false;
+        foreach (bool b in satisfiedFlags) if (!b) return false;
+        return true;
+    }
+    // advance to the next customer. If there are no more customers, returns false.
+    public bool NextCustomer()
     {
         currentCustomerIndex++;
         if (currentCustomerIndex >= customers.Length)
-            currentCustomerIndex = 0;
-
+        {
+            // No more customers
+            return false;
+        }
         LoadCustomer(currentCustomerIndex);
+        return true;
     }
 }

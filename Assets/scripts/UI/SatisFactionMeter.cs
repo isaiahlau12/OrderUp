@@ -5,12 +5,11 @@ using TMPro;
 public class SatisfactionMeter : MonoBehaviour
 {
     [Header("UI References")]
-    public Slider meterSlider;                       // Drag your UI Slider here
-    public TextMeshProUGUI scoreText;                // Drag your TMP text here directly
-
+    public Slider meterSlider;                       
+    public TextMeshProUGUI scoreText;                
     public void UpdateMeter(int currentScore, int scoreToBeat)
     {
-        // Update score text (e.g., "10 / 20")
+        // Update score text 
         if (scoreText != null)
             scoreText.SetText($"{currentScore} / {scoreToBeat}");
         else
